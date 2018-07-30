@@ -24,7 +24,7 @@ Writes each player's score to [Google sheets](https://developers.google.com/shee
 
 #### *🌴 0000—2359* 
 
-The slack bot had commands:
+The slack bot has some commands:
 
 - `btc sim score`: Lists player's scores
 - `btc sim history`: Prints a detailed history of the last 10 days of the game
