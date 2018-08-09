@@ -11,19 +11,20 @@ exports.btcsim = (req, res) => {
   console.log(req)
   console.log(req.method=='POST')
 
-  if (request.method == 'POST') {
+  if (req.method == 'POST') {
         var body = '';
-
-        request.on('data', function (data) {
+	console.log('it is a post')
+        req.on('data', function (data) {
             body += data;
-
+		console.log('reading data')
             // Too much POST data, kill the connection!
             // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
             if (body.length > 1e6)
-                request.connection.destroy();
+                req.connection.destroy();
         });
 
-        request.on('end', function () {
+        req.on('end', function () {
+	    console.log('ended')
             var post = qs.parse(body);
 	    console.log(post)
             res.status(200).send({challenge: post.challenge}); 
