@@ -11,6 +11,8 @@ exports.btcsim = (req, res) => {
   console.log(req)
   console.log(req.method=='POST')
 
+  console.log('new version')
+
   if (req.method == 'POST') {
         var body = '';
 	console.log('it is a post')
