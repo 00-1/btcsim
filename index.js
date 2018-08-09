@@ -1,5 +1,5 @@
 const request = require('request');
-
+const qs = require('querystring');
 /**
  * Responds to any HTTP request.
  *
@@ -11,33 +11,25 @@ exports.btcsim = (req, res) => {
   console.log(req)
   console.log(req.method=='POST')
 
-    var POST = {};
-    if (req.method == 'POST') {
-        req.on('data', function(data) {
-            data = data.toString();
-            data = data.split('&');
-            for (var i = 0; i < data.length; i++) {
-                var _data = data[i].split("=");
-                POST[_data[0]] = _data[1];
-            }
-            console.log(POST);
-            res.status(200).send(POST.challenge);
-        })
-    }
+  if (request.method == 'POST') {
+        var body = '';
 
-  if (req.method == 'POST') {
-        var jsonString = '';
+        request.on('data', function (data) {
+            body += data;
 
-        req.on('data', function (data) {
-            jsonString += data;
+            // Too much POST data, kill the connection!
+            // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+            if (body.length > 1e6)
+                request.connection.destroy();
         });
 
-        req.on('end', function () {
-          console.log(JSON.parse(jsonString));
-
-
+        request.on('end', function () {
+            var post = qs.parse(body);
+	    console.log(post)
+            res.status(200).send({challenge: post.challenge}); 
+            // use post['blah'], etc.
         });
-  }
+  }	
 
   let message = req.query.message || req.body.message || 'Hello World!';
 
