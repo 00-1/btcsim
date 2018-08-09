@@ -7,7 +7,27 @@ const request = require('request');
  * @param {!Object} res HTTP response context.
  */
 exports.btcsim = (req, res) => {
+
+
+  if (req.method == 'POST') {
+        var jsonString = '';
+
+        req.on('data', function (data) {
+            jsonString += data;
+        });
+
+        req.on('end', function () {
+          console.log(JSON.parse(jsonString));
+
+          res.status(200).send(JSON.parse(jsonString).challenge);
+
+        });
+  }
+
   let message = req.query.message || req.body.message || 'Hello World!';
+
+  
+
 
   console.log('Posting')
   console.log('process.env.SLACK_KEY')
