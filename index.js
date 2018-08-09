@@ -1,5 +1,4 @@
 const request = require('request');
-const qs = require('querystring');
 /**
  * Responds to any HTTP request.
  *
@@ -8,16 +7,15 @@ const qs = require('querystring');
  */
 exports.btcsim = (req, res) => {
 
-  console.log(req)
-  console.log(req.method=='POST')
-
-  console.log(req.body)
-  console.log(req.body.message)
-  console.log(req.body.challenge)
-
   if (req.method == 'POST') {
-	console.log('it is a post')
-  }  else {
+    console.log('it is a post')
+    console.log(req.body)
+    if (req.body.hasOwnProperty('challenge')) {
+      res.status(200).send({challenge: req.body.challenge});
+    } else {
+      res.status(200).send('Thanks for the POST');
+    }
+  } else {
 
   let message = req.query.message || req.body.message || 'Hello World!';
 

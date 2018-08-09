@@ -17,7 +17,6 @@
   },
   "homepage": "https://github.com/00-1/btcsim#readme",
   "dependencies": {
-    "querystring": "^0.2.0",
     "request": "^2.87.0"
   }
 }
