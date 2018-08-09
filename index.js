@@ -8,6 +8,8 @@ const request = require('request');
  */
 exports.btcsim = (req, res) => {
 
+  console.log(req)
+  console.log(req.method)
 
   if (req.method == 'POST') {
         var jsonString = '';
@@ -26,11 +28,6 @@ exports.btcsim = (req, res) => {
 
   let message = req.query.message || req.body.message || 'Hello World!';
 
-  
-
-
-  console.log('Posting')
-  console.log('process.env.SLACK_KEY')
   console.log(`Posting a message to https://hooks.slack.com/services/${process.env.SLACK_KEY}`)
 
   request.post(
