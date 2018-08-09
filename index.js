@@ -30,7 +30,7 @@ exports.btcsim = (req, res) => {
             res.status(200).send({challenge: post.challenge}); 
             // use post['blah'], etc.
         });
-  }	
+  }  else {
 
   let message = req.query.message || req.body.message || 'Hello World!';
 
@@ -47,4 +47,6 @@ exports.btcsim = (req, res) => {
   );
 
   res.status(200).send(message);
+
+  }
 };
