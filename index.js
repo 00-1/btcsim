@@ -9,7 +9,21 @@ const request = require('request');
 exports.btcsim = (req, res) => {
 
   console.log(req)
-  console.log(req.method)
+  console.log(req.method=='POST')
+
+    var POST = {};
+    if (req.method == 'POST') {
+        req.on('data', function(data) {
+            data = data.toString();
+            data = data.split('&');
+            for (var i = 0; i < data.length; i++) {
+                var _data = data[i].split("=");
+                POST[_data[0]] = _data[1];
+            }
+            console.log(POST);
+            res.status(200).send(POST.challenge);
+        })
+    }
 
   if (req.method == 'POST') {
         var jsonString = '';
@@ -21,7 +35,6 @@ exports.btcsim = (req, res) => {
         req.on('end', function () {
           console.log(JSON.parse(jsonString));
 
-          res.status(200).send(JSON.parse(jsonString).challenge);
 
         });
   }
