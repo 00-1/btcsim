@@ -6,10 +6,5 @@ steps:
 #  args: ['test']
 #  dir: 'functions/autodeploy'
 - name: 'gcr.io/cloud-builders/gcloud'
-  args: ['ls']
-  dir: 'functions/autodeploy'
-- name: 'gcr.io/cloud-builders/gcloud'
-  args: ['ls']
-- name: 'gcr.io/cloud-builders/gcloud'
   args: ['beta', 'functions', 'deploy', 'btctest', '--trigger-http']
-  dir: 'functions/autodeploy'
+#  dir: 'functions/autodeploy'
