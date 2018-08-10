@@ -1,11 +1,22 @@
-# 🌲 14:00
+A simple slack bot game for multiple players that simulates buying and selling bitcoin.
 
-Reads the price of bitcoin once per day from the [coindesk API](https://www.coindesk.com/api/).
+#### 🌲
 
-# 🌳 14:00 - 15:00
+Reads the price of bitcoin from the [coindesk API](https://www.coindesk.com/api/).
 
-Takes bitcoin buy/sell instructions (at the day's price) from each player via a [slack bot](https://api.slack.com/).
+> Scores and transactions are based on the current price.
 
-# 🎄 15:00
+#### 🌳 
 
-Writes each player's score to [Google sheets](https://developers.google.com/sheets/api/), and the slack channel daily. 
+Takes buy or sell instructions via a [slack bot](https://api.slack.com/).
+
+> Buy with `"@btc buy"`, sell with `"@btc sell"`. No decimals, all trades are 1 BTC. 
+
+> Check the score with `"@btc score"` or view a detailed history with `"@btc history"`
+
+#### 🎄
+
+Writes each player's transactions and score to [Google sheets](https://developers.google.com/sheets/api/).
+
+> A player's score is their total USD plus their total BTC at the current price.
+
