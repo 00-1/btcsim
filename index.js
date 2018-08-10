@@ -21,9 +21,9 @@ exports.btcsim = (req, res) => {
         `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
         { json: { text: 'Alright, message received.' } },
         function (error, response, body) {
-          if (!error && response.statusCode == 200) {
-            console.log(body)
-          }
+	  console.log('Sent', error, response, body)
+            res.status(200).send('Thanks for the POST');
+	  }
         }
       );
     } else {
@@ -32,8 +32,6 @@ exports.btcsim = (req, res) => {
   } else {
 
   let message = req.query.message || req.body.message || 'Hello World!';
-
-
   
   res.status(200).send(message);
 
