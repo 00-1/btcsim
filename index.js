@@ -22,8 +22,7 @@ exports.btcsim = (req, res) => {
         { json: { text: 'Alright, message received.' } },
         function (error, response, body) {
 	  console.log('Sent', error, response, body)
-            res.status(200).send('Thanks for the POST');
-	  }
+          res.status(200).send('Thanks for the POST');
         }
       );
     } else {
