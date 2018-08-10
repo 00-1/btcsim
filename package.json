@@ -1,4 +1,22 @@
 {
   "name": "btcsim",
-  "version": "0.0.1"
+  "version": "0.0.1",
+  "description": "Reads the price of bitcoin once per day from the [coindesk API](https://www.coindesk.com/api/).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/00-1/btcsim.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/00-1/btcsim/issues"
+  },
+  "homepage": "https://github.com/00-1/btcsim#readme",
+  "dependencies": {
+    "request": "^2.87.0"
+  }
 }
