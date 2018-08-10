@@ -12,6 +12,20 @@ exports.btcsim = (req, res) => {
     console.log(req.body)
     if (req.body.hasOwnProperty('challenge')) {
       res.status(200).send({challenge: req.body.challenge});
+    } else if (req.body.event.type=='app_mention') {
+      console.log('mentioned')
+
+      console.log(`Posting a message to https://hooks.slack.com/services/${process.env.SLACK_KEY}`)
+
+      request.post(
+        `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
+        { json: { text: 'Alright, message received.' } },
+        function (error, response, body) {
+          if (!error && response.statusCode == 200) {
+            console.log(body)
+          }
+        }
+      );
     } else {
       res.status(200).send('Thanks for the POST');
     }
@@ -19,18 +33,8 @@ exports.btcsim = (req, res) => {
 
   let message = req.query.message || req.body.message || 'Hello World!';
 
-  console.log(`Posting a message to https://hooks.slack.com/services/${process.env.SLACK_KEY}`)
 
-  request.post(
-    `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
-    { json: { text: 'Hello World' } },
-    function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-            console.log(body)
-        }
-    }
-  );
-
+  
   res.status(200).send(message);
 
   }
