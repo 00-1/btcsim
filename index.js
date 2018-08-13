@@ -12,9 +12,13 @@ admin.initializeApp();
  * @param {!Object} req HTTP request context.
  * @param {!Object} res HTTP response context.
  */
-exports.btcsim = functions.https.onRequest(async (req, res) => {
+exports.btcsim = (req, res) => {
 
-    // log values
+  // give slack a 200 ASAP to avoid 3000ms timeout
+  // note this has to be disabled to send a meaningful response, like the challenge reply
+  res.sendStatus(200);
+
+  // log values
   console.log('method', req.method)
   console.log('body', req.body)
   console.log('slack url', `https://hooks.slack.com/services/${process.env.SLACK_KEY}`)
@@ -27,9 +31,7 @@ exports.btcsim = functions.https.onRequest(async (req, res) => {
       res.status(200).send({challenge: req.body.challenge});
     } else if (req.body.event.type=='app_mention') {
       // store query
-      const writeResult = await admin.firestore().collection('messages').add(req.body); 
-
-      console.log(writeResult);
+      admin.firestore().collection('messages').add(req.body); 
 
       // respond to query
       request.post(
@@ -41,10 +43,5 @@ exports.btcsim = functions.https.onRequest(async (req, res) => {
       );
     }
   }
+};
 
-// give slack a 200 ASAP to avoid 3000ms timeout
-  // note this has to be disabled to send a meaningful response, like the challenge reply
-  res.sendStatus(200);
-
-
-});
