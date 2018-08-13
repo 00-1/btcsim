@@ -1,4 +1,5 @@
 const request = require('request');
+const db = new require("@google-cloud/datastore")();
 /**
  * Responds to any HTTP request.
  *
