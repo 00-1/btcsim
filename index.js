@@ -1,9 +1,6 @@
 const request = require('request');
-
-const functions = require('firebase-functions');                                                                                                                                                                                                
-                                                                                                                                                                                                                                                
-// The Firebase Admin SDK to access the Firebase Realtime Database.                                                                                                                                                                             
-const admin = require('firebase-admin');                                                                                                                                                                                                        
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
 admin.initializeApp();    
 
 /**
@@ -12,12 +9,7 @@ admin.initializeApp();
  * @param {!Object} req HTTP request context.
  * @param {!Object} res HTTP response context.
  */
-exports.btcsim = (req, res) => {
-
-  // give slack a 200 ASAP to avoid 3000ms timeout
-  // note this has to be disabled to send a meaningful response, like the challenge reply
-  res.sendStatus(200);
-
+exports.btcsim = functions.https.onRequest(async (req, res) => {
   // log values
   console.log('method', req.method)
   console.log('body', req.body)
@@ -31,7 +23,8 @@ exports.btcsim = (req, res) => {
       res.status(200).send({challenge: req.body.challenge});
     } else if (req.body.event.type=='app_mention') {
       // store query
-      admin.firestore().collection('messages').add(req.body); 
+      const writeResult = await admin.firestore().collection('messages').add(req.body); 
+      console.log(writeResult);
 
       // respond to query
       request.post(
@@ -43,5 +36,10 @@ exports.btcsim = (req, res) => {
       );
     }
   }
-};
+
+  // give slack a 200 ASAP to avoid 3000ms timeout
+  // note this has to be disabled to send a meaningful response, like the challenge reply
+  res.sendStatus(200);
+
+});
 
