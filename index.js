@@ -23,7 +23,7 @@ exports.btcsim = functions.https.onRequest(async (req, res) => {
       res.status(200).send({challenge: req.body.challenge});
     } else if (req.body.event.type=='app_mention') {
       // store query
-      const writeResult = await admin.firestore().collection('messages').add(req.body); 
+      const writeResult = await admin.firestore().collection('messages').doc(req.body.event_id).add(req.body); 
       console.log(writeResult);
 
       // respond to query
