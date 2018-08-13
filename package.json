@@ -17,6 +17,5 @@
   },
   "homepage": "https://github.com/00-1/btcsim#readme",
   "dependencies": {
-    "request": "^2.87.0"
   }
 }
