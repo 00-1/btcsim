@@ -11,6 +11,8 @@ exports.btcsim = (req, res) => {
   console.log('method', req.method)
   console.log('body', req.body)
   console.log('slack url',  `https://hooks.slack.com/services/${process.env.SLACK_KEY}`)
+  console.log('request', req)
+  console.log('headers', req.headers)
 
   if (req.method == 'POST') {
 
