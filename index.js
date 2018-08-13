@@ -18,9 +18,6 @@ exports.btcsim = (req, res) => {
   console.log('request', req)
   console.log('headers', req.headers)
 
-  // tell slack not to bother with retries
-  res.set('X-Slack-No-Retry', 1);
-
   // deal with posts
   if (req.method == 'POST') {
 
