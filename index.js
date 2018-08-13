@@ -1,5 +1,11 @@
 const request = require('request');
-const db = new require("@google-cloud/datastore")();
+
+const functions = require('firebase-functions');                                                                                                                                                                                                
+                                                                                                                                                                                                                                                
+// The Firebase Admin SDK to access the Firebase Realtime Database.                                                                                                                                                                             
+const admin = require('firebase-admin');                                                                                                                                                                                                        
+admin.initializeApp();    
+
 /**
  * Responds to any HTTP request.
  *
@@ -25,7 +31,9 @@ exports.btcsim = (req, res) => {
       res.status(200).send({challenge: req.body.challenge});
     } else if (req.body.event.type=='app_mention') {
       // store query
-      db.collection('messages').doc(req.body.event_id).set(req.body);
+      const writeResult = await admin.firestore().collection('messages').add(req.body); 
+
+      console.log(writeResult);
 
       // respond to query
       request.post(
