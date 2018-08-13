@@ -14,11 +14,7 @@ admin.initializeApp();
  */
 exports.btcsim = functions.https.onRequest(async (req, res) => {
 
-  // give slack a 200 ASAP to avoid 3000ms timeout
-  // note this has to be disabled to send a meaningful response, like the challenge reply
-  res.sendStatus(200);
-
-  // log values
+    // log values
   console.log('method', req.method)
   console.log('body', req.body)
   console.log('slack url', `https://hooks.slack.com/services/${process.env.SLACK_KEY}`)
@@ -45,4 +41,10 @@ exports.btcsim = functions.https.onRequest(async (req, res) => {
       );
     }
   }
+
+// give slack a 200 ASAP to avoid 3000ms timeout
+  // note this has to be disabled to send a meaningful response, like the challenge reply
+  res.sendStatus(200);
+
+
 });
