@@ -12,7 +12,7 @@ admin.initializeApp();
  * @param {!Object} req HTTP request context.
  * @param {!Object} res HTTP response context.
  */
-exports.btcsim = (functions.https.onRequest(async (req, res) => {
+exports.btcsim = functions.https.onRequest(async (req, res) => {
 
   // give slack a 200 ASAP to avoid 3000ms timeout
   // note this has to be disabled to send a meaningful response, like the challenge reply
@@ -21,7 +21,7 @@ exports.btcsim = (functions.https.onRequest(async (req, res) => {
   // log values
   console.log('method', req.method)
   console.log('body', req.body)
-  console.log('slack url',  `https://hooks.slack.com/services/${process.env.SLACK_KEY}`)
+  console.log('slack url', `https://hooks.slack.com/services/${process.env.SLACK_KEY}`)
 
   // deal with posts
   if (req.method == 'POST') {
