@@ -1,4 +1,4 @@
-//const request = require('request');
+const request = require('request');
 /**
  * Responds to any HTTP request.
  *
@@ -23,13 +23,13 @@ exports.btcsim = (req, res) => {
     if (req.body.hasOwnProperty('challenge')) {
       res.status(200).send({challenge: req.body.challenge});
     } else if (req.body.event.type=='app_mention') {
-      /*request.post(
+      request.post(
         `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
         { json: { text: 'Alright, message received.' } },
         function (error, response, body) {
 	  console.log('Sent', error, response, body)
         }
-      );*/
+      );
     }
   }
 };
