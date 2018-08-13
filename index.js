@@ -25,12 +25,12 @@ exports.btcsim = functions.https.onRequest(async (req, res) => {
 
       // check if we've already got this message
       const doc = admin.firestore().collection('messages').doc(req.body.event_id) 
+      const existing = await doc.get()
+      console.log(existing)
 
-      // write the message to db 
-      doc.get()
-        .then(it => {
-          if (!it.exists) {
-            const result = doc.set(req.body); 
+      // write the message to db         
+      if (!existing.exists) {
+            const result = await doc.set(req.body); 
             console.log('Written document:', result)
 
             // respond to query
@@ -41,13 +41,10 @@ exports.btcsim = functions.https.onRequest(async (req, res) => {
 	        console.log('Sent', error, response, body)
               }
             );
-          } else {
-            console.log('It already exists:', it.data());
-          }
-        })
-        .catch(err => {
-          console.log('Error getting document', err);
-        });
+     
+      } else {
+        console.log("Already exists", existing.data())
+      }
     }
   }
 
