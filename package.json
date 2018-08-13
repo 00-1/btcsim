@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/00-1/btcsim#readme",
   "dependencies": {
-    "request": "^2.87.0"
+    "request": "^2.87.0",
+    "firebase-admin": "~5.13.1",
+    "firebase-functions": "^2.0.0"
   }
 }
