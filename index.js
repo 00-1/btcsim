@@ -12,7 +12,7 @@ admin.initializeApp();
  * @param {!Object} req HTTP request context.
  * @param {!Object} res HTTP response context.
  */
-exports.btcsim = (req, res) => {
+exports.btcsim = (functions.https.onRequest(async (req, res) => {
 
   // give slack a 200 ASAP to avoid 3000ms timeout
   // note this has to be disabled to send a meaningful response, like the challenge reply
@@ -45,4 +45,4 @@ exports.btcsim = (req, res) => {
       );
     }
   }
-};
+});
