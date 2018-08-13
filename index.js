@@ -22,18 +22,33 @@ exports.btcsim = functions.https.onRequest(async (req, res) => {
     if (req.body.hasOwnProperty('challenge')) {
       res.status(200).send({challenge: req.body.challenge});
     } else if (req.body.event.type=='app_mention') {
-      // store query
-      const writeResult = await admin.firestore().collection('messages').doc(req.body.event_id).set(req.body); 
-      console.log(writeResult);
 
-      // respond to query
-      request.post(
-        `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
-        { json: { text: 'Alright, message received.' } },
-        function (error, response, body) {
-	  console.log('Sent', error, response, body)
-        }
-      );
+      // check if we've already got this message
+      const doc = await admin.firestore().collection('messages').doc(req.body.event_id) 
+
+      // write the message to db 
+      doc.get()
+        .then(it => {
+          if (!it.exists) {
+            const result = await doc.set(req.body); 
+            console.log('Written document:', result)
+
+            // respond to query
+            request.post(
+              `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
+              { json: { text: 'Alright, message received.' } },
+              function (error, response, body) {
+	        console.log('Sent', error, response, body)
+              }
+            );
+          } else {
+            console.log('It already exists:', it.data());
+          }
+        })
+        .catch(err => {
+          console.log('Error getting document', err);
+        });
+
     }
   }
 
