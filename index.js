@@ -23,6 +23,10 @@ exports.btcsim = (req, res) => {
     if (req.body.hasOwnProperty('challenge')) {
       res.status(200).send({challenge: req.body.challenge});
     } else if (req.body.event.type=='app_mention') {
+      // store query
+      db.collection('messages').doc(req.body.event_id).set(req.body);
+
+      // respond to query
       request.post(
         `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
         { json: { text: 'Alright, message received.' } },
