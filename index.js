@@ -10,6 +10,12 @@ admin.initializeApp();
  * @param {!Object} res HTTP response context.
  */
 exports.btcsim = functions.https.onRequest(async (req, res) => {
+
+  // give slack a 200 ASAP to avoid 3000ms timeout
+  // note this has to be disabled to send a meaningful response, like the challenge reply
+  console.log('responding asap')
+  res.sendStatus(200);
+
   // log values
   console.log('method', req.method)
   console.log('body', req.body)
@@ -48,9 +54,6 @@ exports.btcsim = functions.https.onRequest(async (req, res) => {
     }
   }
 
-  // give slack a 200 ASAP to avoid 3000ms timeout
-  // note this has to be disabled to send a meaningful response, like the challenge reply
-  res.sendStatus(200);
 
 });
 
