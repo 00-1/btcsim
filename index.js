@@ -7,6 +7,10 @@ const request = require('request');
  */
 exports.btcsim = (req, res) => {
 
+  // give slack a 200 ASAP to avoid 3000ms timeout
+  // note this has to be disabled to send a meaningful response, like the challenge reply
+  res.sendStatus(200);
+
   // log values
   console.log('method', req.method)
   console.log('body', req.body)
@@ -24,8 +28,6 @@ exports.btcsim = (req, res) => {
     if (req.body.hasOwnProperty('challenge')) {
       res.status(200).send({challenge: req.body.challenge});
     } else if (req.body.event.type=='app_mention') {
-      res.sendStatus(200); // give slack a 200
-
       request.post(
         `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
         { json: { text: 'Alright, message received.' } },
@@ -33,10 +35,6 @@ exports.btcsim = (req, res) => {
 	  console.log('Sent', error, response, body)
         }
       );
-    } else {
-      res.sendStatus(200); // give slack a 200
     }
-  } else {
-      res.sendStatus(200); // give slack a 200
   }
 };
