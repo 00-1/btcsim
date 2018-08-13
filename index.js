@@ -24,13 +24,13 @@ exports.btcsim = functions.https.onRequest(async (req, res) => {
     } else if (req.body.event.type=='app_mention') {
 
       // check if we've already got this message
-      const doc = await admin.firestore().collection('messages').doc(req.body.event_id) 
+      const doc = admin.firestore().collection('messages').doc(req.body.event_id) 
 
       // write the message to db 
       doc.get()
         .then(it => {
           if (!it.exists) {
-            const result = await doc.set(req.body); 
+            const result = doc.set(req.body); 
             console.log('Written document:', result)
 
             // respond to query
@@ -48,7 +48,6 @@ exports.btcsim = functions.https.onRequest(async (req, res) => {
         .catch(err => {
           console.log('Error getting document', err);
         });
-
     }
   }
 
