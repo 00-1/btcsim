@@ -53,7 +53,7 @@ exports.btcsim = (req, res) => {
             } else if (command.write.indexOf(message) > -1) { // handle 'write' commands
               chat(req, 'That is a `write` command.  This incident will be reported.');
             } else { // handle invalid commands
-              chat(req, `That is an invalid command, try \`${[command.write.join(), command.readonly.join()].join()}\` . This incident will be reported.`);
+              chat(req, `That is an invalid command, try \`${[command.write.join(), command.readonly.join('\`, \`')].join('\`, \`')}\` . This incident will be reported.`);
             }
 
             // write the message to db
