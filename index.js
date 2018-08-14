@@ -80,8 +80,10 @@ exports.btcsim = (req, res) => {
             );
 
       }
-
- } else { 
+    } else {
+      res.sendStatus(200); 
+    }
+  } else { 
     res.sendStatus(200); 
   }
 };
