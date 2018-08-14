@@ -36,7 +36,7 @@ exports.btcsim = (req, res) => {
 
             request.post(
               `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
-              { json: { text: reply } },
+              { json: { text } },
               (error, response, body) => {
                 console.log('Sent slack message', error, response, body);
                 res.sendStatus(200);
