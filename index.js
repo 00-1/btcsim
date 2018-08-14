@@ -1,5 +1,5 @@
 const request = require('request');
-const functions = require('firebase-functions');
+//const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();    
 
@@ -10,7 +10,7 @@ admin.initializeApp();
  * @param {!Object} res HTTP response context.
  */
 
-exports.btcsim = functions.https.onRequest(async (req, res) => {
+exports.btcsim = async (req, res) => {
 
   // log values
   console.log('method', req.method)
@@ -57,5 +57,5 @@ exports.btcsim = functions.https.onRequest(async (req, res) => {
   }
 
 	
-});
+};
 
