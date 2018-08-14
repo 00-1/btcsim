@@ -1,8 +1,6 @@
 const request = require('request');
 const admin = require('firebase-admin');
-const settings = {/* your settings... */ timestampsInSnapshots: true};
-admin.firestore.settings(settings)
-admin.initializeApp();    
+admin.initializeApp(functions.config().firebase);
 
 /**
  * Responds to any HTTP request.
