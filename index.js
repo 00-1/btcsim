@@ -30,7 +30,7 @@ exports.btcsim = (req, res) => {
             );
 
       // otherwise check for write command
-      } else if (['buy', 'sell'].indexOf(message) > -1); {
+      } else if (['buy', 'sell'].indexOf(message) > -1) {
 
       // initialise db
       admin.initializeApp(functions.config().firebase);
