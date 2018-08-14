@@ -2,13 +2,28 @@ const request = require('request');
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
 
+// post a reply in the channel
+function chat(req, text) {
+  request.post(
+    `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
+    { json: { text: `<@${req.body.event.user}> ${text}` } },
+    (error, response, body) => { console.log('Sent slack message', error, response, body); },
+  );
+}
+
+// end the request
+function end(res, text) {
+  console.log(text);
+  res.status(200).send(text);
+}
+
 // takes a slack message and writes it to the db
 exports.btcsim = (req, res) => {
   // only deal with POSTs
   if (req.method === 'POST') {
     // when first connected to bot need to respond to challenge
     if (req.body.hasOwnProperty('challenge')) {
-      res.status(200).send({ challenge: req.body.challenge });
+      end(res, { challenge: req.body.challenge });
 
     // otherwise check if the bot was mentioned
     } else if (req.body.event.type === 'app_mention') {
@@ -26,55 +41,27 @@ exports.btcsim = (req, res) => {
             // strip out message
             const message = req.body.event.text.split(`<@${req.body.authed_users[0]}>`).join('').split(' ').join('');
 
-            // check for readonly command
-            if (['history', 'score'].indexOf(message) > -1) {
-              request.post(
-                `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
-                { json: { text: `<@${req.body.event.user}> That is a valid \`read-only\` command which will be implemented one day. This incident will be reported.` } },
-                (error, response, body) => {
-                  console.log('Sent slack message', error, response, body);
-                  res.sendStatus(200);
-                },
-              );
+            // define valid commands
+            const command = {
+              readonly: ['score', 'history'],
+              write: ['buy', 'sell'],
+            };
 
-              // otherwise check for write command
-            } else if (['buy', 'sell'].indexOf(message) > -1) {
-            // respond to query
-              request.post(
-                `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
-                { json: { text: `<@${req.body.event.user}> That is a valid \`write\` command which will be implemented one day.  This incident will be reported.` } },
-                (error, response, body) => {
-                  console.log('Sent slack message', error, response, body);
-                  res.sendStatus(200);
-                },
-              );
-              // otherwise it wasn't a valid message
-            } else {
-              request.post(
-                `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
-                { json: { text: `<@${req.body.event.user}> That is not a valid command. This incident will be reported.` } },
-                (error, response, body) => {
-                  console.log('Sent slack message', error, response, body);
-                  res.sendStatus(200);
-                },
-              );
+            // handle commands based on type
+            if (command.readonly.indexOf(message) > -1) { // handle 'read-only' commands
+              chat(req, 'That is a `read-only` command.  This incident will be reported');
+            } else if (command.write.indexOf(message) > -1) { // handle 'write' commands
+              chat(req, 'That is a `write` command.  This incident will be reported.');
+            } else { // handle invalid commands
+              chat(req, `That is an invalid command, try \`${command.write.concat(command.readonly).join('`, `')}\`. This incident will be reported.`);
             }
 
             // write the message to db
             doc.set(req.body);
-          } else {
-            console.log('Already exists', existing.data());
-            res.sendStatus(200);
-          }
+            end(res, 'Sent slack message');
+          } else { end(res, ['Already exists', existing.data()]); }
         })
-        .catch((err) => {
-          console.log('Error getting documents', err);
-          res.sendStatus(200);
-        });
-    } else {
-      res.sendStatus(200);
-    }
-  } else {
-    res.sendStatus(200);
-  }
+        .catch((err) => { end(res, ['Error getting documents', err]); });
+    } else { end(res, ['Missing expected properties', req.body]); }
+  } else { end(res, `Not a POST ${req.method}`); }
 };
