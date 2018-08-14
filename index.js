@@ -5,6 +5,11 @@ const functions = require('firebase-functions');
 // takes a slack message and writes it to the db
 exports.btcsim = (req, res) => {
 
+  // give slack a 200 ASAP to avoid 3000ms timeout
+  // note this has to be disabled to send a meaningful response, like the challenge reply
+  console.log('responding asap')
+  res.sendStatus(200);
+
   console.log(req.body)
 
   // only deal with POSTs
@@ -37,7 +42,6 @@ exports.btcsim = (req, res) => {
               { json: { text: '🎑 Alright, message received. This incident will be reported.' } },
               function (error, response, body) {
 	        console.log('Sent', error, response, body)
-                res.sendStatus(200);
               }
             );
 
@@ -46,18 +50,12 @@ exports.btcsim = (req, res) => {
 
          } else {
            console.log("Already exists", existing.data())
-           res.sendStatus(200);
          }
 
        })      
       .catch((err) => {
         console.log('Error getting documents', err);
       });
-
-      // give slack a 200 ASAP to avoid 3000ms timeout
-      // note this has to be disabled to send a meaningful response, like the challenge reply
-      console.log('responding asap')
-
     }
   }
 };
