@@ -35,7 +35,7 @@ exports.btcsim = (req, res) => {
             // respond to query
             request.post(
               `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
-              { json: { text: '🦖 Alright, message received. This incident will be reported.' } },
+              { json: { text: '🎑 Alright, message received. This incident will be reported.' } },
               function (error, response, body) {
 	        console.log('Sent', error, response, body)
               }
@@ -48,8 +48,7 @@ exports.btcsim = (req, res) => {
            console.log("Already exists", existing.data())
          }
 
-         });
-      })
+       })      
       .catch((err) => {
         console.log('Error getting documents', err);
       });
