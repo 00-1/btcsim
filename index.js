@@ -29,20 +29,21 @@ exports.btcsim = functions.https.onRequest(async (req, res) => {
       const existing = await doc.get()
       console.log(existing)
 
-      // write the message to db         
+      // check if the document was already written
       if (!existing.exists) {
-            const result = await doc.set(req.body); 
-            console.log('Written document:', result)
-
             // respond to query
             request.post(
               `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
-              { json: { text: 'Alright, message received.' } },
+              { json: { text: 'Alright, message received. It will be logged.' } },
               function (error, response, body) {
 	        console.log('Sent', error, response, body)
               }
             );
-     
+
+            // write the message to db         
+            const result = await doc.set(req.body); 
+            console.log('Written document:', result)
+                 
       } else {
         console.log("Already exists", existing.data())
       }
