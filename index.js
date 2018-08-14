@@ -2,6 +2,15 @@ const request = require('request');
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
 
+function chat(req, text) {
+  // post a reply in the channel
+  request.post(
+    `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
+    { json: { text: `<@${req.body.event.user}> ${text}` } },
+    (error, response, body) => { console.log('Sent slack message', error, response, body); },
+  );
+}
+
 // takes a slack message and writes it to the db
 exports.btcsim = (req, res) => {
   // only deal with POSTs
@@ -26,22 +35,24 @@ exports.btcsim = (req, res) => {
             // strip out message
             const message = req.body.event.text.split(`<@${req.body.authed_users[0]}>`).join('').split(' ').join('');
 
-            // post a reply in the channel
-            request.post(
-              `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
-              { json: { text:  
-                ['history', 'score'].indexOf(message) > -1 ? a`<@${req.body.event.user}> That is a \`read-only\` command.  This incident will be reported` 
-                : (['buy', 'sell'].indexOf(message) > -1 ? `<@${req.body.event.user}> That is a \`write\` command.  This incident will be reported.` 
-                : `<@${req.body.event.user}> That is an invalid command. This incident will be reported.` )
-              } },
-              (error, response, body) => {
-                console.log('Sent slack message', error, response, body);
-                res.sendStatus(200);
-              },
-            );
+            // define valid commands
+            const command = {
+              readonly: ['history', 'score'],
+              write: ['buy', 'sell'],
+            };
+
+            // handle commands based on type
+            if (command.readonly.indexOf(message) > -1) { // handle 'read-only' commands
+              chat(req, 'That is a `read-only` command.  This incident will be reported');
+            } else if (command.write.indexOf(message) > -1) { // handle 'write' commands
+              chat(req, 'That is a `write` command.  This incident will be reported.');
+            } else { // handle invalid commands
+              chat(req, `That is an invalid command, try \`${[command.write.join(), command.readonly.join()].join()}\` . This incident will be reported.`);
+            }
 
             // write the message to db
             doc.set(req.body);
+            res.sendStatus(200);
           } else {
             console.log('Already exists', existing.data());
             res.sendStatus(200);
