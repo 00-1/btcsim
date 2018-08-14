@@ -1,5 +1,5 @@
 steps:
 - name: 'gcr.io/cloud-builders/yarn'
-  args: ['install']
+  args: ['install', '--production']
 - name: 'gcr.io/cloud-builders/gcloud'
   args: ['beta', 'functions', 'deploy', 'btcsim', '--trigger-http']
