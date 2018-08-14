@@ -2,13 +2,19 @@ const request = require('request');
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
 
+// post a reply in the channel
 function chat(req, text) {
-  // post a reply in the channel
   request.post(
     `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
     { json: { text: `<@${req.body.event.user}> ${text}` } },
     (error, response, body) => { console.log('Sent slack message', error, response, body); },
   );
+}
+
+// end the request
+function end(res, text) {
+  console.log(text);
+  res.sendStatus(200);
 }
 
 // takes a slack message and writes it to the db
@@ -52,22 +58,18 @@ exports.btcsim = (req, res) => {
 
             // write the message to db
             doc.set(req.body);
-            res.sendStatus(200);
+            end(res, 'Sent slack message');
           } else {
-            console.log('Already exists', existing.data());
-            res.sendStatus(200);
+            end(res, ['Already exists', existing.data()]);
           }
         })
         .catch((err) => {
-          console.log('Error getting documents', err);
-          res.sendStatus(200);
+          end(res, ['Error getting documents', err]);
         });
     } else {
-      console.log('Missing expected properties', req.body);
-      res.sendStatus(200);
+      end(res, ['Missing expected properties', req.body]);
     }
   } else {
-    console.log('Not a POST', req.method);
-    res.sendStatus(200);
+    end(res, `Not a POST ${req.method}`);
   }
 };
