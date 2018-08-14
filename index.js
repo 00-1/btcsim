@@ -11,11 +11,6 @@ admin.initializeApp();
 
 exports.btcsim = async (req, res) => {
 
-  // give slack a 200 ASAP to avoid 3000ms timeout
-  // note this has to be disabled to send a meaningful response, like the challenge reply
-  console.log('responding asap')
-  res.sendStatus(200);
-
   // deal with posts
   if (req.method == 'POST') {
 
@@ -28,14 +23,17 @@ exports.btcsim = async (req, res) => {
       const doc = admin.firestore().collection('messages').doc(req.body.event_id) 
       const existing = await doc.get()
 
-
+      // give slack a 200 ASAP to avoid 3000ms timeout
+      // note this has to be disabled to send a meaningful response, like the challenge reply
+      console.log('responding asap')
+      res.sendStatus(200);
 
       // check if the document was already written
       if (!existing.exists) {
             // respond to query
             request.post(
               `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
-              { json: { text: 'Alright, message received. This incedent will be reported.' } },
+              { json: { text: 'Alright, message received. This incident will be reported.' } },
               function (error, response, body) {
 	        console.log('Sent', error, response, body)
               }
@@ -49,7 +47,5 @@ exports.btcsim = async (req, res) => {
       }
     }
   }
-
-	
 };
 
