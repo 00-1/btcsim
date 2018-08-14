@@ -26,39 +26,22 @@ exports.btcsim = (req, res) => {
             // strip out message
             const message = req.body.event.text.split(`<@${req.body.authed_users[0]}>`).join('').split(' ').join('');
 
-            // check for readonly command
-            if (['history', 'score'].indexOf(message) > -1) {
-              request.post(
-                `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
-                { json: { text: `<@${req.body.event.user}> That is a valid \`read-only\` command which will be implemented one day. This incident will be reported.` } },
-                (error, response, body) => {
-                  console.log('Sent slack message', error, response, body);
-                  res.sendStatus(200);
-                },
-              );
-
-              // otherwise check for write command
-            } else if (['buy', 'sell'].indexOf(message) > -1) {
-            // respond to query
-              request.post(
-                `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
-                { json: { text: `<@${req.body.event.user}> That is a valid \`write\` command which will be implemented one day.  This incident will be reported.` } },
-                (error, response, body) => {
-                  console.log('Sent slack message', error, response, body);
-                  res.sendStatus(200);
-                },
-              );
-              // otherwise it wasn't a valid message
-            } else {
-              request.post(
-                `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
-                { json: { text: `<@${req.body.event.user}> That is not a valid command. This incident will be reported.` } },
-                (error, response, body) => {
-                  console.log('Sent slack message', error, response, body);
-                  res.sendStatus(200);
-                },
-              );
+            if (['history', 'score'].indexOf(message) > -1) { // check for readonly command
+              const text = `<@${req.body.event.user}> That is a valid \`read-only\` command which will be implemented one day.  This incident will be reported`;
+            } else if (['buy', 'sell'].indexOf(message) > -1) { // otherwise check for write command
+              const text = `<@${req.body.event.user}> That is a valid \`write\` command which will be implemented one day.  This incident will be reported.`;
+            } else { // otherwise it wasn't a valid message
+              const text = `<@${req.body.event.user}> That is not a valid command. This incident will be reported.`;
             }
+
+            request.post(
+              `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
+              { json: { text: reply } },
+              (error, response, body) => {
+                console.log('Sent slack message', error, response, body);
+                res.sendStatus(200);
+              },
+            );
 
             // write the message to db
             doc.set(req.body);
@@ -72,9 +55,11 @@ exports.btcsim = (req, res) => {
           res.sendStatus(200);
         });
     } else {
+      console.log('Missing expected properties', req.body);
       res.sendStatus(200);
     }
   } else {
+    console.log('Not a POST', req.method);
     res.sendStatus(200);
   }
 };
