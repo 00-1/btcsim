@@ -26,17 +26,14 @@ exports.btcsim = (req, res) => {
             // strip out message
             const message = req.body.event.text.split(`<@${req.body.authed_users[0]}>`).join('').split(' ').join('');
 
-            if (['history', 'score'].indexOf(message) > -1) { // check for readonly command
-              const text = `<@${req.body.event.user}> That is a valid \`read-only\` command which will be implemented one day.  This incident will be reported`;
-            } else if (['buy', 'sell'].indexOf(message) > -1) { // otherwise check for write command
-              const text = `<@${req.body.event.user}> That is a valid \`write\` command which will be implemented one day.  This incident will be reported.`;
-            } else { // otherwise it wasn't a valid message
-              const text = `<@${req.body.event.user}> That is not a valid command. This incident will be reported.`;
-            }
-
+            // post a reply in the channel
             request.post(
               `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
-              { json: { text } },
+              { json: { text:  
+                ['history', 'score'].indexOf(message) > -1 ? a`<@${req.body.event.user}> That is a \`read-only\` command.  This incident will be reported` 
+                : (['buy', 'sell'].indexOf(message) > -1 ? `<@${req.body.event.user}> That is a \`write\` command.  This incident will be reported.` 
+                : `<@${req.body.event.user}> That is an invalid command. This incident will be reported.` )
+              } },
               (error, response, body) => {
                 console.log('Sent slack message', error, response, body);
                 res.sendStatus(200);
