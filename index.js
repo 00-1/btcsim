@@ -15,23 +15,7 @@ exports.btcsim = (req, res) => {
     // otherwise check if the bot was mentioned
     } else if (req.body.event.type=='app_mention') {
 
-      // strip out message
-      const message = req.body.event.text.split(`<@${req.body.authed_users[0]}>`).join('').split(' ').join('');
-
-      // check for readonly command
-      if (['history', 'score'].indexOf(message) > -1) {
-        request.post(
-              `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
-              { json: { text: `<@${req.body.event.user}> That is a valid readonly command which will be implemented one day.` } },
-              function (error, response, body) {
-	        console.log('Sent slack message', error, response, body)
-                res.sendStatus(200);
-              }
-            );
-
-      // otherwise check for write command
-      } else if (['buy', 'sell'].indexOf(message) > -1) {
-
+      
       // initialise db
       admin.initializeApp(functions.config().firebase);
       const db = admin.firestore();
@@ -44,6 +28,23 @@ exports.btcsim = (req, res) => {
          // check if the document was already written
          if (!existing.exists) {
 
+      // strip out message
+      const message = req.body.event.text.split(`<@${req.body.authed_users[0]}>`).join('').split(' ').join('');
+
+      // check for readonly command
+      if (['history', 'score'].indexOf(message) > -1) {
+        request.post(
+              `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
+              { json: { text: `<@${req.body.event.user}> That is a valid readonly command which will be implemented one day. This incident will be reported.` } },
+              function (error, response, body) {
+	        console.log('Sent slack message', error, response, body)
+                res.sendStatus(200);
+              }
+            );
+
+      // otherwise check for write command
+      } else if (['buy', 'sell'].indexOf(message) > -1) {
+
             // respond to query
             request.post(
               `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
@@ -53,6 +54,17 @@ exports.btcsim = (req, res) => {
                 res.sendStatus(200);
               }
             );
+      // otherwise it wasn't a valid message
+      } else {
+        request.post(
+              `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
+              { json: { text: `<@${req.body.event.user}> That is not a valid command. This incident will be reported.` } },
+              function (error, response, body) {
+	        console.log('Sent slack message', error, response, body)
+                res.sendStatus(200);
+              }
+            );
+      }
 
             // write the message to db         
             doc.set(req.body); 
@@ -68,18 +80,6 @@ exports.btcsim = (req, res) => {
         res.sendStatus(200);
       });
  
-      // otherwise it wasn't a valid message
-      } else {
-        request.post(
-              `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
-              { json: { text: `<@${req.body.event.user}> That is not a valid command` } },
-              function (error, response, body) {
-	        console.log('Sent slack message', error, response, body)
-                res.sendStatus(200);
-              }
-            );
-
-      }
     } else {
       res.sendStatus(200); 
     }
