@@ -23,7 +23,7 @@ exports.btcsim = (req, res) => {
   if (req.method === 'POST') {
     // when first connected to bot need to respond to challenge
     if (req.body.hasOwnProperty('challenge')) {
-      end(res, { challenge: req.body.challenge })
+      end(res, { challenge: req.body.challenge });
 
     // otherwise check if the bot was mentioned
     } else if (req.body.event.type === 'app_mention') {
@@ -53,7 +53,7 @@ exports.btcsim = (req, res) => {
             } else if (command.write.indexOf(message) > -1) { // handle 'write' commands
               chat(req, 'That is a `write` command.  This incident will be reported.');
             } else { // handle invalid commands
-              chat(req, `That is an invalid command, try \`${command.write.concat(command.readonly).join('\`, \`')}\`. This incident will be reported.`);
+              chat(req, `That is an invalid command, try \`${command.write.concat(command.readonly).join('`, `')}\`. This incident will be reported.`);
             }
 
             // write the message to db
