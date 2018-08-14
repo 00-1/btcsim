@@ -14,7 +14,7 @@ function chat(req, text) {
 // end the request
 function end(res, text) {
   console.log(text);
-  res.sendStatus(200);
+  res.status(200).send(text);
 }
 
 // takes a slack message and writes it to the db
@@ -23,7 +23,7 @@ exports.btcsim = (req, res) => {
   if (req.method === 'POST') {
     // when first connected to bot need to respond to challenge
     if (req.body.hasOwnProperty('challenge')) {
-      res.status(200).send({ challenge: req.body.challenge });
+      end(res, { challenge: req.body.challenge })
 
     // otherwise check if the bot was mentioned
     } else if (req.body.event.type === 'app_mention') {
@@ -59,17 +59,9 @@ exports.btcsim = (req, res) => {
             // write the message to db
             doc.set(req.body);
             end(res, 'Sent slack message');
-          } else {
-            end(res, ['Already exists', existing.data()]);
-          }
+          } else { end(res, ['Already exists', existing.data()]); }
         })
-        .catch((err) => {
-          end(res, ['Error getting documents', err]);
-        });
-    } else {
-      end(res, ['Missing expected properties', req.body]);
-    }
-  } else {
-    end(res, `Not a POST ${req.method}`);
-  }
+        .catch((err) => { end(res, ['Error getting documents', err]); });
+    } else { end(res, ['Missing expected properties', req.body]); }
+  } else { end(res, `Not a POST ${req.method}`); }
 };
