@@ -1,58 +1,58 @@
 const request = require('request');
-const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-admin.initializeApp();    
+const functions = require('firebase-functions');
 
-/**
- * Responds to any HTTP request.
- *
- * @param {!Object} req HTTP request context.
- * @param {!Object} res HTTP response context.
- */
-exports.btcsim = functions.https.onRequest(async (req, res) => {
+// takes a slack message and writes it to the db
+exports.btcsim = (req, res) => {
 
-  // log values
-  console.log('method', req.method)
-  console.log('body', req.body)
-  console.log('slack url', `https://hooks.slack.com/services/${process.env.SLACK_KEY}`)
-
-  // deal with posts
+  // only deal with POSTs
   if (req.method == 'POST') {
 
     // when first connected to bot need to respond to challenge
-    if (req.body.hasOwnProperty('challenge')) {
+    if (req.body.hasOwnProperty('challenge')) { 
       res.status(200).send({challenge: req.body.challenge});
+
+    // otherwise check if the bot was mentioned
     } else if (req.body.event.type=='app_mention') {
 
-      // check if we've already got this message
-      const doc = admin.firestore().collection('messages').doc(req.body.event_id) 
-      const existing = await doc.get()
-      console.log(existing)
+      // initialise db
+      admin.initializeApp(functions.config().firebase);
+      const db = admin.firestore();
 
-      // write the message to db         
-      if (!existing.exists) {
-            const result = await doc.set(req.body); 
-            console.log('Written document:', result)
+      // check if we've already stored this message
+      // (slack can resend messages if it gets a timeout)
+      const doc = db.collection('messages').doc(req.body.event_id) 
+      doc.get()
+       .then((existing) => {
+         // check if the document was already written
+         if (!existing.exists) {
 
             // respond to query
             request.post(
               `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
-              { json: { text: 'Alright, message received.' } },
+              { json: { text: '🎑 Alright, message received. This incident will be reported.' } },
               function (error, response, body) {
-	        console.log('Sent', error, response, body)
+	        console.log('Sent slack message', error, response, body)
+                res.sendStatus(200);
               }
             );
-     
-      } else {
-        console.log("Already exists", existing.data())
-      }
-    }
-  }
 
-  // give slack a 200 ASAP to avoid 3000ms timeout
-  // note this has to be disabled to send a meaningful response, like the challenge reply
-  console.log('responding asap')
-  res.sendStatus(200);
-	
-});
+            // write the message to db         
+            doc.set(req.body); 
+
+         } else {
+           console.log('Already exists', existing.data())
+           res.sendStatus(200);
+         }
+
+       })      
+      .catch((err) => {
+        console.log('Error getting documents', err);
+        res.sendStatus(200);
+      });
+    }
+  } else { 
+    res.sendStatus(200); 
+  }
+};
 
