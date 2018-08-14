@@ -15,6 +15,23 @@ exports.btcsim = (req, res) => {
     // otherwise check if the bot was mentioned
     } else if (req.body.event.type=='app_mention') {
 
+      // strip out message
+      const message = req.body.event.text.split(`<@${req.body.authed_users[0]}>`).join('').split(' ').join('');
+
+      // check for readonly command
+      if (['history', 'score'].indexOf(message) > -1) {
+        request.post(
+              `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
+              { json: { text: `<@${req.body.event.user}> That is a valid readonly command which will be implemented one day.` } },
+              function (error, response, body) {
+	        console.log('Sent slack message', error, response, body)
+                res.sendStatus(200);
+              }
+            );
+
+      // otherwise check for write command
+      } else if (['buy', 'sell'].indexOf(message) > -1); {
+
       // initialise db
       admin.initializeApp(functions.config().firebase);
       const db = admin.firestore();
@@ -30,7 +47,7 @@ exports.btcsim = (req, res) => {
             // respond to query
             request.post(
               `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
-              { json: { text: '🎑 Alright, message received. This incident will be reported.' } },
+              { json: { text: `<@${req.body.event.user}> That is a valid write command which will be implemented one day.  This incident will be reported.` } },
               function (error, response, body) {
 	        console.log('Sent slack message', error, response, body)
                 res.sendStatus(200);
@@ -50,8 +67,21 @@ exports.btcsim = (req, res) => {
         console.log('Error getting documents', err);
         res.sendStatus(200);
       });
-    }
-  } else { 
+ 
+      // otherwise it wasn't a valid message
+      } else {
+        request.post(
+              `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
+              { json: { text: `<@${req.body.event.user}> That is not a valid command` } },
+              function (error, response, body) {
+	        console.log('Sent slack message', error, response, body)
+                res.sendStatus(200);
+              }
+            );
+
+      }
+
+ } else { 
     res.sendStatus(200); 
   }
 };
