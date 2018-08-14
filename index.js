@@ -1,7 +1,6 @@
 const request = require('request');
 const admin = require('firebase-admin');
 const functions = require('firebase-functions');
-admin.initializeApp(functions.config().firebase);
 
 /**
  * Responds to any HTTP request.
@@ -10,7 +9,7 @@ admin.initializeApp(functions.config().firebase);
  * @param {!Object} res HTTP response context.
  */
 
-exports.btcsim = async (req, res) => {
+exports.btcsim = (req, res) => {
 
   // deal with posts
   if (req.method == 'POST') {
@@ -20,17 +19,19 @@ exports.btcsim = async (req, res) => {
       res.status(200).send({challenge: req.body.challenge});
     } else if (req.body.event.type=='app_mention') {
 
+      // initialise db
+      admin.initializeApp(functions.config().firebase);
+      const db = admin.firestore();
+
       // check if we've already got this message
-      const doc = admin.firestore().collection('messages').doc(req.body.event_id) 
-      const existing = await doc.get()
+      const doc = db.collection('messages').doc(req.body.event_id) 
+      doc.get()
+       .then((existing) => {
+         // check if the document was already written
+         if (!existing.exists) {
 
-      // give slack a 200 ASAP to avoid 3000ms timeout
-      // note this has to be disabled to send a meaningful response, like the challenge reply
-      console.log('responding asap')
-      res.sendStatus(200);
+            console.log("It exists", existing)
 
-      // check if the document was already written
-      if (!existing.exists) {
             // respond to query
             request.post(
               `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
@@ -41,11 +42,23 @@ exports.btcsim = async (req, res) => {
             );
 
             // write the message to db         
-            const result = await doc.set(req.body); 
+            doc.set(req.body); 
 
-      } else {
-        console.log("Already exists", existing.data())
-      }
+         } else {
+           console.log("Already exists", existing.data())
+         }
+
+         });
+      })
+      .catch((err) => {
+        console.log('Error getting documents', err);
+      });
+
+      // give slack a 200 ASAP to avoid 3000ms timeout
+      // note this has to be disabled to send a meaningful response, like the challenge reply
+      console.log('responding asap')
+      res.sendStatus(200);
+
     }
   }
 };
