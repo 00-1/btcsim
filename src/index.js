@@ -1,24 +1,11 @@
-const request = require('request');
-const admin = require('firebase-admin');
-const functions = require('firebase-functions');
+import admin from 'firebase-admin';
+import functions from 'firebase-functions';
 
-// post a reply in the channel
-function chat(req, text) {
-  request.post(
-    `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
-    { json: { text: `<@${req.body.event.user}> ${text}` } },
-    (error, response, body) => { console.log('Sent slack message', error, response, body); },
-  );
-}
-
-// end the request
-function end(res, text) {
-  console.log(text);
-  res.status(200).send(text);
-}
+import chat from './chat';
+import end from './end';
 
 // takes a slack message and writes it to the db
-exports.btcsim = (req, res) => {
+const btcsim = (req, res) => {
   // only deal with POSTs
   if (req.method === 'POST') {
     // when first connected to bot need to respond to challenge
@@ -65,3 +52,5 @@ exports.btcsim = (req, res) => {
     } else { end(res, ['Missing expected properties', req.body]); }
   } else { end(res, `Not a POST ${req.method}`); }
 };
+
+export default btcsim;
