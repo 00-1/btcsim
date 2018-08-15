@@ -7,7 +7,7 @@ module.exports = {
     path: __dirname,
     filename: 'dist/index.js',
     library: 'btcsim',
-    libraryTarget: 'global',
+    libraryTarget: 'var',
     libraryExport: 'default',
   },
   module: {
