@@ -4,5 +4,5 @@ steps:
 - name: 'gcr.io/cloud-builders/yarn'
   args: ['webpack', '-p']
 - name: 'gcr.io/cloud-builders/gcloud'
-  args: ['beta', 'functions', 'deploy', 'btcsimdev', '--trigger-http', '--entry-point=btcsim']
+  args: ['beta', 'functions', 'deploy', 'btcsimdev', '--source=./dist', '--trigger-http', '--entry-point=btcsim']
   
