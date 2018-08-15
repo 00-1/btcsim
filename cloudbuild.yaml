@@ -1,5 +1,7 @@
 steps:
 - name: 'gcr.io/cloud-builders/yarn'
-  args: ['install', '--production']
+  args: ['install']
+ - name: 'gcr.io/cloud-builders/yarn'
+  args: ['webpack', '-p'] 
 - name: 'gcr.io/cloud-builders/gcloud'
   args: ['beta', 'functions', 'deploy', 'btcsim', '--trigger-http']
