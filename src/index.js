@@ -51,4 +51,4 @@ export default function (req, res) {
         .catch((err) => { end(res, ['Error getting documents', err]); });
     } else { end(res, ['Missing expected properties', req.body]); }
   } else { end(res, `Not a POST ${req.method}`); }
-};
+}
