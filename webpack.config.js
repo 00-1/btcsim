@@ -8,7 +8,7 @@ module.exports = {
     filename: 'dist/index.js',
     library: 'btcsim',
     libraryTarget: 'var',
-    libraryExport: 'default',
+    libraryExport: 'btcsim',
   },
   module: {
     rules: [
