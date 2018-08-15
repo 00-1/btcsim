@@ -6,6 +6,8 @@ module.exports = {
   output: {
     path: __dirname,
     filename: 'dist/index.js',
+    library: 'btcsim',
+    libraryTarget: 'umd',
   },
   module: {
     rules: [

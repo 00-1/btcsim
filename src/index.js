@@ -5,7 +5,7 @@ import chat from './chat';
 import end from './end';
 
 // takes a slack message and writes it to the db
-export const btcsim = (req, res) => {
+export default (req, res) => {
   // only deal with POSTs
   if (req.method === 'POST') {
     // when first connected to bot need to respond to challenge
@@ -52,4 +52,3 @@ export const btcsim = (req, res) => {
     } else { end(res, ['Missing expected properties', req.body]); }
   } else { end(res, `Not a POST ${req.method}`); }
 };
-
