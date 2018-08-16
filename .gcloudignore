@@ -1,11 +1,14 @@
 #gcloud
-.eslintrc
+.eslintrc.json
 .babelrc
 README.md
 cloudbuild-dev.yaml
 cloudbuild.yaml
-webpack.condif.js
+webpack.config.js
 yarn.lock
+.gitignore
+src
+.git
 
 # Logs
 logs
