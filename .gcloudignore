@@ -1,5 +1,11 @@
-#webpack
-dist.js
+#gcloud
+.eslintrc
+.babelrc
+README.md
+cloudbuild-dev.yaml
+cloudbuild.yaml
+webpack.condif.js
+yarn.lock
 
 # Logs
 logs
@@ -36,7 +42,7 @@ bower_components
 build/Release
 
 # Dependency directories
-node_modules/
+#node_modules/
 jspm_packages/
 
 # TypeScript v1 declaration files
