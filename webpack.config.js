@@ -1,11 +1,11 @@
-// const nodeExternals = require('webpack-node-externals');
+const nodeExternals = require('webpack-node-externals');
 
 module.exports = {
   target: 'node',
-  // externals: [nodeExternals()],
+  externals: [nodeExternals()],
   output: {
     path: __dirname,
-    filename: 'dist/index.js',
+    filename: 'dist.js',
     library: 'btcsim',
     libraryTarget: 'this',
     libraryExport: 'btcsim',
@@ -14,7 +14,7 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        // exclude: /(node_modules|bower_components)/,
+        exclude: /(node_modules|bower_components)/,
         use: {
           loader: 'babel-loader',
           options: {
