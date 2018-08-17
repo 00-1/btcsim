@@ -20,3 +20,4 @@ Writes each player's transactions and score to [Google sheets](https://developer
 
 > A player's score is their total USD plus their total BTC at the current price.
 
+

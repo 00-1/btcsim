@@ -1,5 +1,14 @@
-#webpack
-dist.js
+#gcloud
+.eslintrc.json
+.babelrc
+README.md
+cloudbuild-dev.yaml
+cloudbuild.yaml
+webpack.config.js
+yarn.lock
+.gitignore
+src
+.git
 
 # Logs
 logs
@@ -74,5 +83,3 @@ typings/
 
 # Serverless directories
 .serverless
-
-
