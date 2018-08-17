@@ -6,7 +6,6 @@ import end from './end';
 
 // initialise db
 admin.initializeApp(config().firebase);
-const db = admin.firestore();
 
 // takes a slack message and writes it to the db
 export function btcsim(req, res) {
@@ -20,6 +19,8 @@ export function btcsim(req, res) {
     } else if (req.body.event.type === 'app_mention') {
       // check if we've already stored this message
       // (slack can resend messages if it gets a timeout)
+
+      const db = admin.firestore();
       const doc = db.collection('messages').doc(req.body.event_id);
       doc.get()
         .then((existing) => {

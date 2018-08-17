@@ -5,7 +5,6 @@ function chat(req, text) {
   request.post(
     `https://hooks.slack.com/services/${process.env.SLACK_KEY}`,
     { json: { text: `<@${req.body.event.user}> ${text}` } },
-    (error, response, body) => { /* nothing to do */ },
   );
 }
 
