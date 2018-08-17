@@ -1,7 +1,8 @@
 steps:
 - name: 'gcr.io/cloud-builders/yarn'
   args: ['install']
- - name: 'gcr.io/cloud-builders/yarn'
-  args: ['webpack', '-p'] 
+- name: 'gcr.io/cloud-builders/yarn'
+  args: ['webpack']
 - name: 'gcr.io/cloud-builders/gcloud'
-  args: ['beta', 'functions', 'deploy', 'btcsim', '--trigger-http']
+  args: ['beta', 'functions', 'deploy', 'btcsim', '--trigger-http', '--entry-point=btcsim']
+  
