@@ -1,23 +1,30 @@
-A simple slack bot game for multiple players that simulates buying and selling bitcoin.
-
 #### 🌲
 
-Reads the price of bitcoin from the [coindesk API](https://www.coindesk.com/api/).
+Responds quickly to webhook events, e.g. from [Slack Events API](https://api.slack.com/events-api).
 
-> Scores and transactions are based on the current price.
+> Responding quickly helps avoid [timeouts](https://api.slack.com/events-api#failure_conditions) and gives the user feedback sooner.
+
+#### 🥦
+
+Checks whether the event has already been received, by looking for a document with the message id in the database.
+
+> APIs resend webhook events if they fail (e.g. due to timeout). Not doing this check can cause the reply to be repeated.
 
 #### 🌳 
 
-Takes buy or sell instructions via a [slack bot](https://api.slack.com/).
+If it's a new event, sends a reply.
 
-> Buy with `"@btc buy"`, sell with `"@btc sell"`. No decimals, all trades are 1 BTC. 
+> Replies are defined per requester URL, and should consist of a quick initial response to the event, e.g. [replying in slack](https://api.slack.com/incoming-webhooks).
 
-> Check the score with `"@btc score"` or view a detailed history with `"@btc history"`
+#### 🌴
+
+If it's a new event, writes a document to [Google Cloud Firestore](https://firebase.google.com/docs/firestore/).
+
+> Another function that performs more time-costly work can be set to trigger on new document writes. 
 
 #### 🎄
 
-Writes each player's transactions and score to [Google sheets](https://developers.google.com/sheets/api/).
+Designed to be deployed as a serverless [Google Cloud Function](https://cloud.google.com/functions/docs/).
 
-> A player's score is their total USD plus their total BTC at the current price.
-
+> Expects environment variable `SLACK_KEY`.
 
