@@ -1,8 +1,12 @@
-import admin from 'firebase-admin';
-import * as functions from 'firebase-functions';
+import {initializeApp, firestore} as admin from 'firebase-admin';
+import { config } as functions from 'firebase-functions';
 
 import chat from './chat';
 import end from './end';
+
+//initialise db
+admin.initializeApp(functions.config().firebase);
+const db = admin.firestore();
 
 // takes a slack message and writes it to the db
 export function btcsim(req, res) {
@@ -14,9 +18,6 @@ export function btcsim(req, res) {
 
     // otherwise check if the bot was mentioned
     } else if (req.body.event.type === 'app_mention') {
-      // initialise db
-      admin.initializeApp(functions.config().firebase);
-      const db = admin.firestore();
 
       // check if we've already stored this message
       // (slack can resend messages if it gets a timeout)
