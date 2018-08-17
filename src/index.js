@@ -1,12 +1,12 @@
-import { initializeApp, firestore } from 'firebase-admin';
+import admin from 'firebase-admin';
 import { config } from 'firebase-functions';
 
 import chat from './chat';
 import end from './end';
 
 // initialise db
-initializeApp(config().firebase);
-const db = firestore();
+admin.initializeApp(config().firebase);
+const db = admin.firestore();
 
 // takes a slack message and writes it to the db
 export function btcsim(req, res) {
