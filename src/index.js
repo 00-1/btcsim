@@ -66,10 +66,10 @@ admin.initializeApp(config().firebase);
  */
 export default (req, res) => {
   // get the definition by url
-  const definition = definitions.filter(def => def.url > req.headers['user-agent'])[0];
+  const definition = definitions.filter(def => def.url === req.headers['user-agent'])[0];
 
   // check we have a definition for the url
-  if (!definition) {
+  if (definition === undefined) {
     return end(res, 400, [
       'Undefined user-agent.',
       'Expected one of:',
