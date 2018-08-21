@@ -52,7 +52,7 @@ admin.initializeApp(config().firebase);
  *
  */
 export default (req, res) => {
-  console.log(req.host);
+  console.log(res.host);
 
   // only deal with the correct HTTP verb
   if (req.method !== definition.verb) {
