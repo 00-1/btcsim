@@ -54,20 +54,44 @@ admin.initializeApp(config().firebase);
 export default (req, res) => {
   console.log(req.host);
 
+  // only deal with the correct HTTP verb
+  if (req.method !== definition.verb) {
+    return end(res, [
+      'Wrong HTTP verb.',
+      `Expected: ${definition.verb}`,
+      `Got: ${req.method}`,
+    ]);
+  }
 
-  if (req.method === definition.verb) { // only deal with the correct HTTP verb
-    if (definition.valid(req.body)) { // check for valid JSON
-      const db = admin.firestore(); // initialise db
-      const doc = db.collection(definition.collection) // get a document by message id
-        .doc(definition.id(req.body)); // (which may or may not already exist)
-      doc.get()
-        .then((existing) => { // check if we've already stored a message with this id
-          if (!existing.exists) { // ignore resends
-            const reply = definition.reply(req); // initial reply
-            doc.set(req.body); // write the message to db
-            end(res, reply); // respond to request
-          } else { end(res, ['Message already handled.', existing.data()]); }
-        }).catch((err) => { end(res, ['Error getting accessing database.', err]); });
-    } else { end(res, ['Missing expected properties.', req.body]); }
-  } else { end(res, ['Wrong HTTP verb.', `Expected: ${definition.verb}`, `Got: ${req.method}`]); }
+  // check for valid JSON
+  if (!definition.valid(req.body)) {
+    return end(res, [
+      'Missing expected properties.',
+      req.body,
+    ]);
+  }
+
+  // get a document by message id (which may or may not already exist)
+  const db = admin.firestore();
+  const doc = db.collection(definition.collection).doc(definition.id(req.body));
+
+  return doc.get()
+    .then((existing) => {
+      // check if we've already handled a message with this id - ignore resends
+      if (existing.exists) {
+        return end(res, [
+          'Message already handled.',
+          existing.data()]);
+      }
+
+      // handle the message
+      const reply = definition.reply(req); // initial reply
+      doc.set(req.body); // db write
+      return end(res, reply); // respond to request
+    }).catch((err) => {
+      end(res, [
+        'Error getting accessing database.',
+        err,
+      ]);
+    });
 };
