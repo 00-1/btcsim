@@ -6,10 +6,7 @@ import end from './end';
 // initialise app
 admin.initializeApp(config().firebase);
 
-/*
- * handles incoming webhook
- *
- */
+// handle incoming webhook
 export default (req, res, definitions) => {
   // get the definition by url
   const definition = definitions.filter(def => def.url === req.headers['user-agent'])[0];

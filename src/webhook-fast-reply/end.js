@@ -1,7 +1,2 @@
-// end the request
-function end(res, code, text) {
-  console.log(text);
-  res.status(code).send(text);
-}
-
-export default end;
+// end a request with status code and text
+export default (res, code, text) => res.status(code).send(text);

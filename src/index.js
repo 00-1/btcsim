@@ -1,14 +1,11 @@
-import reply from './webhook-fast-reply';
+import wfr from './webhook-fast-reply';
 import slack from './definitions/slack';
 import monitoring from './definitions/monitoring';
 
-const definitions = {
+const definitions = [
   slack,
   monitoring,
-};
+];
 
-/*
- * handles incoming webhook
- *
- */
-export default (req, res) => reply(req, res, definitions);
+// route request through webhook-fast-reply, with definitions
+export default (req, res) => wfr(req, res, definitions);
