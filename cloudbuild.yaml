@@ -4,5 +4,5 @@ steps:
 - name: 'gcr.io/cloud-builders/yarn'
   args: ['webpack']
 - name: 'gcr.io/cloud-builders/gcloud'
-  args: ['beta', 'functions', 'deploy', '${_FUNCTION_NAME}', '--trigger-http', '--entry-point=wcf']
+  args: ['beta', 'functions', 'deploy', '${_FUNCTION_NAME}', '--trigger-http', '--entry-point=wfr']
   
