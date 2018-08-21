@@ -6,7 +6,7 @@ module.exports = {
   output: {
     path: __dirname,
     filename: 'dist.js',
-    library: 'btcsim',
+    library: 'wfr',
     libraryTarget: 'this',
     libraryExport: 'default',
   },
