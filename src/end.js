@@ -1,7 +1,7 @@
 // end the request
-function end(res, text) {
+function end(res, code, text) {
   console.log(text);
-  res.status(200).send(text);
+  res.status(code).send(text);
 }
 
 export default end;

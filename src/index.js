@@ -70,17 +70,17 @@ export default (req, res) => {
 
   // check we have a definition for the url
   if (!definition) {
-      return end(res, [
+    return end(res, 400, [
       'Undefined user-agent.',
       'Expected one of:',
       definitions,
       `Got: ${req.headers['user-agent']}`,
-    ]);   
+    ]);
   }
 
   // only deal with the correct HTTP verb
   if (req.method !== definition.verb) {
-    return end(res, [
+    return end(res, 405, [
       'Wrong HTTP verb.',
       `Expected: ${definition.verb}`,
       `Got: ${req.method}`,
@@ -89,7 +89,7 @@ export default (req, res) => {
 
   // check for valid JSON
   if (!definition.valid(req.body)) {
-    return end(res, [
+    return end(res, 400, [
       'Missing expected properties.',
       req.body,
     ]);
@@ -105,15 +105,15 @@ export default (req, res) => {
       .then((existing) => {
       // check if we've already handled a message with this id - ignore resends
         if (existing.exists) {
-          return end(res, [
-            'Message already handled.',
+          return end(res, 200, [
+            'Message already handled. Nothing to do.',
             existing.data()]);
         }
 
         // log the message
         return doc.set(req.body);
       }).catch((err) => {
-        end(res, [
+        end(res, 500, [
           'Error getting accessing database.',
           err,
         ]);
@@ -122,5 +122,5 @@ export default (req, res) => {
 
   // handle the message
   const reply = definition.reply(req);
-  return end(res, reply);
+  return end(res, 200, reply);
 };
