@@ -4,7 +4,7 @@
 
 🥦 Checks whether the event has already been received, by looking for a document with the message id in the database.
 
-> APIs resend webhook events if they fail (e.g. due to timeout). Not doing this check can cause the reply to be repeated.
+> Webhooks resend events if they fail (e.g. due to timeout). Not doing this check can cause the reply to be repeated.
 
 🌳 If it's a new event, sends a reply.
 
