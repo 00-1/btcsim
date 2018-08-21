@@ -65,9 +65,18 @@ admin.initializeApp(config().firebase);
  *
  */
 export default (req, res) => {
-
   // get the definition by url
-  const definition = definitions.filter(def => def.url > req.headers['user-agent']);
+  const definition = definitions.filter(def => def.url > req.headers['user-agent'])[0];
+
+  // check we have a definition for the url
+  if (!definition) {
+      return end(res, [
+      'Undefined user-agent.',
+      'Expected one of:',
+      definitions,
+      `Got: ${req.headers['user-agent']}`,
+    ]);   
+  }
 
   // only deal with the correct HTTP verb
   if (req.method !== definition.verb) {
@@ -86,31 +95,32 @@ export default (req, res) => {
     ]);
   }
 
+  // check whether logging is enabled
+  if (definition.log) {
   // get a document by message id (which may or may not already exist)
-  const db = admin.firestore();
-  const doc = db.collection(definition.collection).doc(definition.id(req.body));
+    const db = admin.firestore();
+    const doc = db.collection(definition.collection).doc(definition.id(req.body));
 
-  return doc.get()
-    .then((existing) => {
+    doc.get()
+      .then((existing) => {
       // check if we've already handled a message with this id - ignore resends
-      if (existing.exists) {
-        return end(res, [
-          'Message already handled.',
-          existing.data()]);
-      }
+        if (existing.exists) {
+          return end(res, [
+            'Message already handled.',
+            existing.data()]);
+        }
 
-      // log the message if required
-      if (definition.log) {
-        doc.set(req.body);
-      }
+        // log the message
+        return doc.set(req.body);
+      }).catch((err) => {
+        end(res, [
+          'Error getting accessing database.',
+          err,
+        ]);
+      });
+  }
 
-      // handle the message
-      const reply = definition.reply(req);
-      return end(res, reply);
-    }).catch((err) => {
-      end(res, [
-        'Error getting accessing database.',
-        err,
-      ]);
-    });
+  // handle the message
+  const reply = definition.reply(req);
+  return end(res, reply);
 };
