@@ -52,10 +52,9 @@ admin.initializeApp(config().firebase);
  *
  */
 export default (req, res) => {
-  console.log(res);
-
-  console.log(JSON.stringify(res));
-  // only deal with the correct HTTP verb
+console.log(req.headers)
+        
+        // only deal with the correct HTTP verb
   if (req.method !== definition.verb) {
     return end(res, [
       'Wrong HTTP verb.',
