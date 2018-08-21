@@ -12,7 +12,7 @@ const definition = {
   verb: 'POST',
   valid: body => has(body, 'event')// check structure
     && has(body.event, 'type')// check structure
-    && body.event.api_app_id === process.env.API_APP_ID// basic check that req came from slack bot
+    && body.api_app_id === process.env.API_APP_ID// basic check that req came from slack bot
     && body.event.type === 'app_mention'// only handle mentions
     && !has(body.event, 'edited'), // ignore edits
   id: body => body.event_id,
@@ -52,8 +52,9 @@ admin.initializeApp(config().firebase);
  *
  */
 export default (req, res) => {
-  console.log(res.host);
+  console.log(res);
 
+  console.log(JSON.stringify(res));
   // only deal with the correct HTTP verb
   if (req.method !== definition.verb) {
     return end(res, [
