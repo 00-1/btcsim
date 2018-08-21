@@ -68,7 +68,7 @@ export default (req, res) => {
   // get the definition by url
   const definition = definitions.filter(def => def.url === req.headers['user-agent'])[0];
 
-console.log(definition)
+  console.log(definition);
 
   // check we have a definition for the url
   if (definition === undefined) {
@@ -101,13 +101,12 @@ console.log(definition)
   if (definition.log) {
   // get a document by message id (which may or may not already exist)
 
-console.log('db!')          
-          const db = admin.firestore();
+    console.log('db!');
+    const db = admin.firestore();
     const doc = db.collection(definition.collection).doc(definition.id(req.body));
 
 
-
-    doc.get()
+    return doc.get()
       .then((existing) => {
       // check if we've already handled a message with this id - ignore resends
         if (existing.exists) {
@@ -117,7 +116,11 @@ console.log('db!')
         }
 
         // log the message
-        return doc.set(req.body);
+        doc.set(req.body);
+
+        // handle the message
+        const reply = definition.reply(req);
+        return end(res, 200, reply);
       }).catch((err) => {
         end(res, 500, [
           'Error getting accessing database.',
@@ -126,7 +129,6 @@ console.log('db!')
       });
   }
 
-console.log('handling!')
 
   // handle the message
   const reply = definition.reply(req);
