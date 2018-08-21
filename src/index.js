@@ -68,6 +68,8 @@ export default (req, res) => {
   // get the definition by url
   const definition = definitions.filter(def => def.url === req.headers['user-agent'])[0];
 
+console.log(definition)
+
   // check we have a definition for the url
   if (definition === undefined) {
     return end(res, 400, [
@@ -98,8 +100,12 @@ export default (req, res) => {
   // check whether logging is enabled
   if (definition.log) {
   // get a document by message id (which may or may not already exist)
-    const db = admin.firestore();
+
+console.log('db!')          
+          const db = admin.firestore();
     const doc = db.collection(definition.collection).doc(definition.id(req.body));
+
+
 
     doc.get()
       .then((existing) => {
@@ -119,6 +125,8 @@ export default (req, res) => {
         ]);
       });
   }
+
+console.log('handling!')
 
   // handle the message
   const reply = definition.reply(req);
