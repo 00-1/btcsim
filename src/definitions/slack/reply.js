@@ -1,6 +1,7 @@
 import chat from './chat';
 import has from './has';
 
+// handles messages from slack
 export default (req) => {
   // strip out message
   const message = req.body.event.text.split(`<@${req.body.authed_users[0]}>`).join('').split(' ').join('');
