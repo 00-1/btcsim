@@ -6,7 +6,7 @@ export default {
   verb: 'POST',
   valid,
   reply,
-  id: body => body.event_id,
+  id: () => Date.now(),
   collection: 'slack_messages',
   log: true,
 };
