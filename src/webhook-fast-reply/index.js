@@ -60,7 +60,7 @@ export default (req, res, definitions) => {
         }
 
         // log the message
-        return doc.set(req);
+        return doc.set(req.body);
       }).catch((err) => {
         end(res, 500, [
           'Error getting accessing database.',
