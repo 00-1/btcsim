@@ -8,5 +8,5 @@ export default {
   reply,
   id: body => body.event_id,
   collection: 'slack_messages',
-
+  log: true,
 };
