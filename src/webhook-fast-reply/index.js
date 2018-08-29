@@ -46,6 +46,7 @@ export default (req, res, definitions) => {
 
     console.log(definition.collection);
     console.log(definition.id(req.body));
+          console.log(req.body)
     const db = admin.firestore();
     const doc = db.collection(definition.collection).doc(definition.id(req.body));
 
@@ -59,7 +60,7 @@ export default (req, res, definitions) => {
         }
 
         // log the message
-        return doc.set(req.body);
+        return doc.set(req);
       }).catch((err) => {
         end(res, 500, [
           'Error getting accessing database.',

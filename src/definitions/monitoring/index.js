@@ -6,5 +6,5 @@ export default {
   reply: () => 'OK',
   log: true,
   collection: 'monitoring',
-  id: () => Date.now(),
+  id: () => String(Date.now()),
 };
