@@ -41,6 +41,11 @@ export default (req, res, definitions) => {
   // check whether logging is enabled
   if (definition.log) {
   // get a document by message id (which may or may not already exist)
+    //
+    //
+
+    console.log(definition.collection);
+    console.log(definition.id(req.body));
     const db = admin.firestore();
     const doc = db.collection(definition.collection).doc(definition.id(req.body));
 
