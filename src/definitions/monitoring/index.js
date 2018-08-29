@@ -4,5 +4,7 @@ export default {
   verb: 'GET',
   valid: () => true,
   reply: () => 'OK',
-  log: false,
+  log: true,
+  collection: 'monitoring',
+  id: () => Date.now(),
 };
